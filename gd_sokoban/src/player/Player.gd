@@ -16,13 +16,19 @@ func _process(delta: float) -> void:
 	var is_moving = false
 	if Input.is_action_pressed("ui_left"):
 		_dir = Direction.eType.LEFT
+		is_moving = true
 	elif Input.is_action_pressed("ui_up"):
 		_dir = Direction.eType.UP
+		is_moving = true
 	elif Input.is_action_pressed("ui_right"):
 		_dir = Direction.eType.RIGHT
+		is_moving = true
 	elif Input.is_action_pressed("ui_down"):
 		_dir = Direction.eType.DOWN		
+		is_moving = true
 	
+	if is_moving:
+		position += 100 * Direction.get_vector(_dir) * delta
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
 
 func _get_anim_id(idx:int) -> int:
