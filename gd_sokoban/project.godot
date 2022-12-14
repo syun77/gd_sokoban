@@ -14,6 +14,10 @@ config/name="gd_sokoban"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Direction="*res://src/common/Direction.gd"
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
