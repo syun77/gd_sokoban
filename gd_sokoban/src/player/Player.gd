@@ -12,6 +12,16 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_anim_timer += delta
+
+	var is_moving = false
+	if Input.is_action_pressed("ui_left"):
+		_dir = Direction.eType.LEFT
+	elif Input.is_action_pressed("ui_up"):
+		_dir = Direction.eType.UP
+	elif Input.is_action_pressed("ui_right"):
+		_dir = Direction.eType.RIGHT
+	elif Input.is_action_pressed("ui_down"):
+		_dir = Direction.eType.DOWN		
 	
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
 
@@ -19,6 +29,12 @@ func _get_anim_id(idx:int) -> int:
 	var tbl = [0, 1, 0, 2]
 
 	match _dir:
+		Direction.eType.LEFT:
+			tbl = [15, 17, 15, 16]
+		Direction.eType.UP:
+			tbl = [3, 5, 3, 4]
+		Direction.eType.RIGHT:
+			tbl = [12, 14, 12, 13]
 		_: #Direction.eType.DOWN:
 			tbl = [0, 1, 0, 2]
 			
