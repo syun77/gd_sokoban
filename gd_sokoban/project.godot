@@ -28,6 +28,7 @@ config/icon="res://icon.png"
 
 Direction="*res://src/common/Direction.gd"
 Common="*res://src/common/Common.gd"
+Field="*res://src/common/Field.gd"
 
 [gui]
 

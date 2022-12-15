@@ -1,4 +1,7 @@
 extends Area2D
+# ===========================
+# プレイヤー.
+# ===========================
 
 class_name Player
 # ---------------------------------------
@@ -23,9 +26,8 @@ var _anim_timer = 0
 # ---------------------------------------
 func set_pos(p:Point2) -> void:
 	_point = p
-	position = Common.idx_to_world(_point, true)
+	position = Field.idx_to_world(_point, true)
 	
-
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
@@ -50,8 +52,11 @@ func _process(delta: float) -> void:
 		is_moving = true
 	
 	if is_moving:
-		_point.iadd(Direction.get_point(_dir))
-		set_pos(_point)
+		var next = Point2.new(_point.x, _point.y)
+		next.iadd(Direction.get_point(_dir))
+		if Field.can_move(next.x, next.y):
+			# 移動可能.
+			set_pos(next)
 		
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
 
