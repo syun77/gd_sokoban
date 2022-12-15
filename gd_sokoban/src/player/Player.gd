@@ -47,13 +47,28 @@ func _process(delta: float) -> void:
 		is_moving = true
 	
 	if is_moving:
-		var next = Point2.new(_point.x, _point.y)
-		next.iadd(Direction.get_point(_dir))
-		if Field.can_move(next.x, next.y):
-			# 移動可能.
-			set_pos(next.x, next.y, true)
+		_move()
 		
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
+
+func _move() -> void:
+	# 移動先を調べる.
+	var next = Point2.new(_point.x, _point.y)
+	# 移動方向.
+	var d = Direction.get_point(_dir)
+	next.iadd(d)
+	
+	if Field.is_crate(next.x, next.y):
+		# 移動先が荷物.
+		if Field.can_move_crate(next.x, next.y, d.x, d.y):
+			# 移動できる.
+			# 荷物を動かす.
+			Field.move_crate(next.x, next.y, d.x, d.y)
+			# プレイヤーも動かす.
+			set_pos(next.x, next.y, true)
+	elif Field.can_move(next.x, next.y):
+		# 移動可能.
+		set_pos(next.x, next.y, true)
 
 func _get_anim_id(idx:int) -> int:
 	var tbl = [0, 1, 0, 2]

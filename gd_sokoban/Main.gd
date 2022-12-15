@@ -20,6 +20,11 @@ onready var _player:Player = null
 onready var _crate_layer = $CrateLayer
 
 # ---------------------------------------
+# vars.
+# ---------------------------------------
+var _timer = 0.0
+
+# ---------------------------------------
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
@@ -41,6 +46,7 @@ func _ready() -> void:
 				# 生成したらタイルの情報は消しておく.
 				_tile_front.set_cell(i, j, Field.eTile.NONE)
 	
+	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
 		var p = Field.search_random_none()
 		_create_player(p.x, p.y)
@@ -71,3 +77,10 @@ func _create_crate(i:int, j:int, id:int) -> void:
 	# Spriteの更新があるので先に add_child() する.
 	_crate_layer.add_child(crate)
 	crate.setup(i, j, id)
+
+## 更新.
+func _process(delta:float) -> void:
+	_timer += delta
+	
+	if Input.is_action_just_pressed("ui_reset"):
+		get_tree().change_scene("res://Main.tscn")

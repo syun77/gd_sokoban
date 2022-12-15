@@ -68,11 +68,37 @@ func can_move(i:int, j:int) -> bool:
 
 ## 荷物があるかどうか.
 func is_crate(i:int, j:int) -> bool:
+	if search_crate(i, j) != null:
+		return true
+	return false
+
+## 荷物を探す.
+## @return 荷物オブジェクト(Crate)。循環参照になるので型は指定できない.
+func search_crate(i:int, j:int):
 	for crate in Common.get_layer("crate").get_children():
 		if crate.is_same_pos(i, j):
-			return true # 存在する
+			return crate # 存在する.
 	
-	return false # 存在しない.
+	return null # 存在しない.
+	
+
+## 荷物を動かせるかどうか.
+func can_move_crate(i:int, j:int, dx:int, dy:int) -> bool:
+	# 移動先をチェックする.
+	if can_move(i+dx, j+dy) == false:
+		return false # 動かせない.
+	
+	if is_crate(i, j) == false:
+		return false # 指定した位置に荷物がない.
+	
+	return true # 動かせる.
+	
+## 荷物を動かす.
+func move_crate(i:int, j:int, dx:int, dy:int) -> void:
+	var crate = search_crate(i, j)
+	var xnext = i + dx
+	var ynext = j + dy
+	crate.set_pos(xnext, ynext, true)
 
 ## インデックスX座標をワールドX座標に変換する.
 func idx_to_world_x(i:int, is_center:bool=false) -> float:
