@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Area2D",
+"class": "Player",
+"language": "GDScript",
+"path": "res://src/player/Player.gd"
+} ]
+_global_script_class_icons={
+"Player": ""
+}
+
 [application]
 
 config/name="gd_sokoban"
@@ -17,6 +27,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Direction="*res://src/common/Direction.gd"
+Common="*res://src/common/Common.gd"
 
 [gui]
 

@@ -1,34 +1,58 @@
 extends Area2D
 
-var _dir = Direction.eType.DOWN
+class_name Player
+# ---------------------------------------
+# preload.
+# ---------------------------------------
+const Point2 = preload("res://src/common/Point2.gd")
 
-var _anim_timer = 0
-
+# ---------------------------------------
+# onready.
+# ---------------------------------------
 onready var _spr = $Sprite
 
-# Called when the node enters the scene tree for the first time.
+# ---------------------------------------
+# vars.
+# ---------------------------------------
+var _point := Point2.new()
+var _dir = Direction.eType.DOWN
+var _anim_timer = 0
+
+# ---------------------------------------
+# public functions.
+# ---------------------------------------
+func set_pos(p:Point2) -> void:
+	_point = p
+	position = Common.idx_to_world(_point, true)
+	
+
+# ---------------------------------------
+# private functions.
+# ---------------------------------------
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
 
 func _process(delta: float) -> void:
 	_anim_timer += delta
 
 	var is_moving = false
-	if Input.is_action_pressed("ui_left"):
+	if Input.is_action_just_pressed("ui_left"):
 		_dir = Direction.eType.LEFT
 		is_moving = true
-	elif Input.is_action_pressed("ui_up"):
+	elif Input.is_action_just_pressed("ui_up"):
 		_dir = Direction.eType.UP
 		is_moving = true
-	elif Input.is_action_pressed("ui_right"):
+	elif Input.is_action_just_pressed("ui_right"):
 		_dir = Direction.eType.RIGHT
 		is_moving = true
-	elif Input.is_action_pressed("ui_down"):
+	elif Input.is_action_just_pressed("ui_down"):
 		_dir = Direction.eType.DOWN		
 		is_moving = true
 	
 	if is_moving:
-		position += 100 * Direction.get_vector(_dir) * delta
+		_point.iadd(Direction.get_point(_dir))
+		set_pos(_point)
+		
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
 
 func _get_anim_id(idx:int) -> int:
