@@ -40,6 +40,11 @@ func set_pos(i:int, j:int, is_center:bool) -> void:
 func is_same_pos(i:int, j:int) -> bool:
 	return _point.equal_xy(i, j)
 
+func idx_x() -> int:
+	return _point.x
+func idx_y() -> int:
+	return _point.y
+
 # ---------------------------------------
 # private functions.
 # ---------------------------------------

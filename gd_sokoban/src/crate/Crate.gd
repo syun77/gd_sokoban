@@ -26,6 +26,7 @@ enum eType {
 # onready.
 # ---------------------------------------
 onready var _spr = $Sprite
+onready var _spr2 = $Sprite2
 
 # ---------------------------------------
 # vars.
@@ -49,8 +50,18 @@ func setup(i:int, j:int, type:int) -> void:
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
+func _ready() -> void:
+	_spr2.visible = false
+	
 func _process(delta: float) -> void:
-	_timer = delta
+	_timer += delta
+	
+	_spr2.visible = false
+	if Field.is_match_crate_type(idx_x(), idx_y(), _type):
+		# マッチしているので点滅する.
+		_spr2.visible = true
+		_spr2.modulate.a = 0.5 * abs(sin(_timer*4))
+		
 
 ## 種別に対応するスプライトフレーム番号を取得する
 func _get_anim_idx() -> int:

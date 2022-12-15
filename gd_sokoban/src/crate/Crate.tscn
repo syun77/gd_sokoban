@@ -1,7 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/images/crate.png" type="Texture" id=1]
 [ext_resource path="res://src/crate/Crate.gd" type="Script" id=2]
+[ext_resource path="res://assets/images/crate_white.png" type="Texture" id=3]
+
+[sub_resource type="CanvasItemMaterial" id=2]
+blend_mode = 1
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -12,6 +16,11 @@ script = ExtResource( 2 )
 texture = ExtResource( 1 )
 hframes = 2
 vframes = 2
+
+[node name="Sprite2" type="Sprite" parent="."]
+visible = false
+material = SubResource( 2 )
+texture = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

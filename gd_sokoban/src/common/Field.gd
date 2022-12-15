@@ -99,6 +99,20 @@ func move_crate(i:int, j:int, dx:int, dy:int) -> void:
 	var xnext = i + dx
 	var ynext = j + dy
 	crate.set_pos(xnext, ynext, true)
+	
+func is_match_crate_type(i:int, j:int, type:int) -> bool:
+	var v = get_cell(i, j)
+	match v:
+		eTile.POINT1:
+			return type == eTile.CRATE1 # 茶色.
+		eTile.POINT2:
+			return type == eTile.CRATE2 # 赤色.
+		eTile.POINT3:
+			return type == eTile.CRATE3 # 青色.
+		eTile.POINT4:
+			return type == eTile.CRATE4 # 緑色.
+		_:
+			return false # マッチしてない.
 
 ## インデックスX座標をワールドX座標に変換する.
 func idx_to_world_x(i:int, is_center:bool=false) -> float:
