@@ -60,9 +60,19 @@ func get_cell(i:int, j:int) -> int:
 func can_move(i:int, j:int) -> bool:
 	match get_cell(i, j):
 		eTile.BLOCK:
-			return false
+			return false # 壁がある.
 		_:
+			if is_crate(i, j):
+				return false # 荷物がある.
 			return true
+
+## 荷物があるかどうか.
+func is_crate(i:int, j:int) -> bool:
+	for crate in Common.get_layer("crate").get_children():
+		if crate.is_same_pos(i, j):
+			return true # 存在する
+	
+	return false # 存在しない.
 
 ## インデックスX座標をワールドX座標に変換する.
 func idx_to_world_x(i:int, is_center:bool=false) -> float:
