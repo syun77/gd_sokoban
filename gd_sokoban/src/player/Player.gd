@@ -16,7 +16,6 @@ onready var _spr = $Sprite
 # ---------------------------------------
 # vars.
 # ---------------------------------------
-var _dir = Direction.eType.DOWN
 var _anim_timer = 0
 
 # ---------------------------------------
@@ -52,6 +51,8 @@ func _ready() -> void:
 
 func _move() -> void:
 	# 移動先を調べる.
+	var prev_dir = _dir # 移動前の向き
+	var now = Point2.new(_point.x, _point.y)
 	var next = Point2.new(_point.x, _point.y)
 	# 移動方向.
 	var d = Direction.get_point(_dir)
@@ -65,9 +66,19 @@ func _move() -> void:
 			Field.move_crate(next.x, next.y, d.x, d.y)
 			# プレイヤーも動かす.
 			set_pos(next.x, next.y, true)
+		
+			# リプレイデータを追加.
+			_add_replay(now, prev_dir, next, _dir)
 	elif Field.can_move(next.x, next.y):
 		# 移動可能.
 		set_pos(next.x, next.y, true)
+		
+		# リプレイデータを追加.
+		_add_replay(now, prev_dir, next, Direction.eType.NONE)
+
+func _add_replay(player_pos:Point2, dir:int, crate_pos:Point2, crate_dir:int) -> void:
+	var replay = Common.ReplayData.new(player_pos.x, player_pos.y, dir, crate_pos.x, crate_pos.y, crate_dir)
+	Common.add_undo(replay)
 
 func _get_anim_id(idx:int) -> int:
 	var tbl = [0, 1, 0, 2]

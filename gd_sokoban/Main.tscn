@@ -33,3 +33,22 @@ theme = ExtResource( 3 )
 text = "STAGE CLEAR"
 align = 1
 valign = 1
+
+[node name="LabelStep" type="Label" parent="UILayer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 232.0
+margin_bottom = 592.0
+theme = ExtResource( 3 )
+text = "STEP:0"
+
+[node name="Button" type="Button" parent="UILayer"]
+margin_left = 776.0
+margin_top = 8.0
+margin_right = 788.0
+margin_bottom = 28.0
+rect_scale = Vector2( 2, 2 )
+theme = ExtResource( 3 )
+text = "UNDO"
+
+[connection signal="pressed" from="UILayer/Button" to="." method="_on_Button_pressed"]

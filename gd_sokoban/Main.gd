@@ -25,6 +25,7 @@ onready var _tile_back = $TileMapBack
 onready var _tile_front = $TileMapFront
 onready var _player:Player = null
 onready var _ui_caption = $UILayer/LabelCaption
+onready var _ui_step = $UILayer/LabelStep
 # キャンバスレイヤー.
 onready var _crate_layer = $CrateLayer
 
@@ -39,12 +40,6 @@ var _state = eState.MAIN
 # ---------------------------------------
 func _ready() -> void:
 	_ui_caption.visible = false
-	
-	# 共通モジュールをセットアップする.
-	var layers = {
-		"crate": _crate_layer,
-	}
-	Common.setup(layers)
 	
 	# フィールドをセットアップする.
 	Field.setup(_tile_front)
@@ -61,6 +56,12 @@ func _ready() -> void:
 	if _player == null:
 		var p = Field.search_random_none()
 		_create_player(p.x, p.y)
+	
+	# 共通モジュールをセットアップする.
+	var layers = {
+		"crate": _crate_layer,
+	}
+	Common.setup(_player, layers)
 
 ## タイル情報から生成されるオブジェクトをチェック＆生成.
 func _create_obj(i:int, j:int, id:int) -> bool:
@@ -97,6 +98,9 @@ func _process(delta:float) -> void:
 		eState.STAGE_CLEAR:
 			_update_stage_clear()
 	
+	# UIの更新.
+	_update_ui(delta)
+	
 	if Input.is_action_just_pressed("ui_reset"):
 		get_tree().change_scene("res://Main.tscn")
 
@@ -121,3 +125,19 @@ func _update_stage_clear() -> void:
 	
 	if Input.is_action_just_pressed("ui_accept"):
 		get_tree().change_scene("res://Main.tscn")
+
+func _update_ui(_delta:float) -> void:
+	_ui_step.text = "STEP:%d"%Common.count_undo()
+	for data in Common.get_undo_list():
+		var d:Common.ReplayData = data
+		var buf = "\n"
+		var dir1 = Direction.to_name(d.player_dir)
+		var dir2 = Direction.to_name(d.crate_dir)
+		buf += "(%d %d)%s (%d %d)%s"%[d.player_pos.x, d.player_pos.y, dir1, d.crate_pos.x, d.crate_pos.y, dir2]
+		_ui_step.text += buf
+	
+
+
+func _on_Button_pressed() -> void:
+	# undoを実行する.
+	Common.undo()

@@ -17,6 +17,8 @@ const Point2 = preload("res://src/common/Point2.gd")
 # enum.
 # ---------------------------------------
 enum eType {
+	NONE,
+	
 	LEFT,
 	UP,
 	RIGHT,
@@ -47,6 +49,18 @@ func get_point(type:int) -> Point2:
 		_:
 			return Point2.new(0, 1)
 
+func to_name(type:int) -> String:
+	match type:
+		eType.LEFT:
+			return "LEFT"
+		eType.UP:
+			return "UP"
+		eType.RIGHT:
+			return "RIGHT"
+		eType.DOWN:
+			return "DOWN"
+		_:
+			return "NONE"
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
