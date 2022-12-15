@@ -99,7 +99,8 @@ func move_crate(i:int, j:int, dx:int, dy:int) -> void:
 	var xnext = i + dx
 	var ynext = j + dy
 	crate.set_pos(xnext, ynext, true)
-	
+
+## 指定の荷物が正しい位置にあるかどうか.
 func is_match_crate_type(i:int, j:int, type:int) -> bool:
 	var v = get_cell(i, j)
 	match v:
@@ -113,6 +114,18 @@ func is_match_crate_type(i:int, j:int, type:int) -> bool:
 			return type == eTile.CRATE4 # 緑色.
 		_:
 			return false # マッチしてない.
+
+## ステージクリアしたかどうか.
+func is_stage_clear() -> bool:
+	for crate in Common.get_layer("crate").get_children():
+		var i = crate.idx_x()
+		var j = crate.idx_y()
+		var type = crate.get_type()
+		if is_match_crate_type(i, j, type) == false:
+			return false # 一致していないものがある.
+	
+	# すべて一致した.
+	return true
 
 ## インデックスX座標をワールドX座標に変換する.
 func idx_to_world_x(i:int, is_center:bool=false) -> float:

@@ -11,11 +11,20 @@ const PlayerObj = preload("res://src/player/Player.tscn")
 const CrateObj = preload("res://src/crate/Crate.tscn")
 
 # ---------------------------------------
+# const.
+# ---------------------------------------
+enum eState {
+	MAIN, # メイン.
+	STAGE_CLEAR, # ステージクリア.
+}
+
+# ---------------------------------------
 # onready.
 # ---------------------------------------
 onready var _tile_back = $TileMapBack
 onready var _tile_front = $TileMapFront
 onready var _player:Player = null
+onready var _ui_caption = $UILayer/LabelCaption
 # キャンバスレイヤー.
 onready var _crate_layer = $CrateLayer
 
@@ -23,11 +32,13 @@ onready var _crate_layer = $CrateLayer
 # vars.
 # ---------------------------------------
 var _timer = 0.0
+var _state = eState.MAIN
 
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
+	_ui_caption.visible = false
 	
 	# 共通モジュールをセットアップする.
 	var layers = {
@@ -80,7 +91,33 @@ func _create_crate(i:int, j:int, id:int) -> void:
 
 ## 更新.
 func _process(delta:float) -> void:
-	_timer += delta
+	match _state:
+		eState.MAIN:
+			_update_main(delta)
+		eState.STAGE_CLEAR:
+			_update_stage_clear()
 	
 	if Input.is_action_just_pressed("ui_reset"):
+		get_tree().change_scene("res://Main.tscn")
+
+## 更新 > メイン.
+func _update_main(delta:float) -> void:
+	_timer += delta
+	
+	# プレイヤーの更新.
+	_player.proc(delta)
+	
+	# 荷物の更新.
+	for crate in _crate_layer.get_children():
+		crate.proc(delta)
+	
+	# ステージクリアしたかどうか.
+	if Field.is_stage_clear():
+		_state = eState.STAGE_CLEAR
+
+## 更新 > ステージクリア.
+func _update_stage_clear() -> void:
+	_ui_caption.visible = true
+	
+	if Input.is_action_just_pressed("ui_accept"):
 		get_tree().change_scene("res://Main.tscn")

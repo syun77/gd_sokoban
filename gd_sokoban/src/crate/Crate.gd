@@ -46,13 +46,18 @@ func setup(i:int, j:int, type:int) -> void:
 	_type = type
 	_spr.frame = _get_anim_idx()
 	set_pos(i, j, true)
-	
+
+## 更新
+func proc(_delta: float) -> void:
+	pass
+
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
 	_spr2.visible = false
-	
+
+## アニメーションの更新.
 func _process(delta: float) -> void:
 	_timer += delta
 	
@@ -61,7 +66,6 @@ func _process(delta: float) -> void:
 		# マッチしているので点滅する.
 		_spr2.visible = true
 		_spr2.modulate.a = 0.5 * abs(sin(_timer*4))
-		
 
 ## 種別に対応するスプライトフレーム番号を取得する
 func _get_anim_idx() -> int:

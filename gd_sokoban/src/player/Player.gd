@@ -22,14 +22,7 @@ var _anim_timer = 0
 # ---------------------------------------
 # public functions.
 # ---------------------------------------
-	
-# ---------------------------------------
-# private functions.
-# ---------------------------------------
-func _ready() -> void:
-	pass
-
-func _process(delta: float) -> void:
+func proc(delta:float) -> void:
 	_anim_timer += delta
 
 	var is_moving = false
@@ -50,6 +43,12 @@ func _process(delta: float) -> void:
 		_move()
 		
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
+	
+# ---------------------------------------
+# private functions.
+# ---------------------------------------
+func _ready() -> void:
+	pass
 
 func _move() -> void:
 	# 移動先を調べる.
