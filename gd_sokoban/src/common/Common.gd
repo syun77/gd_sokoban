@@ -11,7 +11,7 @@ const Point2 = preload("res://src/common/Point2.gd")
 # const.
 # ---------------------------------------
 # 最初のレベル.
-const FIRST_LEVEL = 2
+const FIRST_LEVEL = 1
 # 最終レベル.
 const FINAL_LEVEL = 3
 
@@ -120,6 +120,8 @@ func next_level() -> void:
 ## 最終レベルを終えたかどうか.
 func completed_all_level() -> bool:
 	return _level > FINAL_LEVEL
+func is_final_level() -> bool:
+	return _level == FINAL_LEVEL
 ## 現在のレベル番号を取得する.
 func get_level() -> int:
 	return _level

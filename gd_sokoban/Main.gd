@@ -140,6 +140,9 @@ func _update_main(delta:float) -> void:
 ## 更新 > ステージクリア.
 func _update_stage_clear() -> void:
 	_ui_caption.visible = true
+	_ui_caption.text = "COMPLETED"
+	if Common.is_final_level():
+		_ui_caption.text = "ALL LEVELS COMPLETED!"
 	
 	if Input.is_action_just_pressed("ui_accept"):
 		# 次のステージに進む.
