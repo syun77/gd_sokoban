@@ -11,7 +11,7 @@ const Point2 = preload("res://src/common/Point2.gd")
 # const.
 # ---------------------------------------
 # 最初のレベル.
-const FIRST_LEVEL = 1
+const FIRST_LEVEL = 2
 # 最終レベル.
 const FINAL_LEVEL = 3
 
