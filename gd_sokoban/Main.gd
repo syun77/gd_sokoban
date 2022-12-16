@@ -26,6 +26,8 @@ onready var _tile_front = $TileMapFront
 onready var _player:Player = null
 onready var _ui_caption = $UILayer/LabelCaption
 onready var _ui_step = $UILayer/LabelStep
+onready var _ui_undo = $UILayer/UndoButton
+onready var _ui_redo = $UILayer/RedoButton
 # キャンバスレイヤー.
 onready var _crate_layer = $CrateLayer
 
@@ -40,6 +42,8 @@ var _state = eState.MAIN
 # ---------------------------------------
 func _ready() -> void:
 	_ui_caption.visible = false
+	_ui_step.visible = false
+	_ui_undo.visible = false
 	
 	# フィールドをセットアップする.
 	Field.setup(_tile_front)
@@ -127,7 +131,16 @@ func _update_stage_clear() -> void:
 		get_tree().change_scene("res://Main.tscn")
 
 func _update_ui(_delta:float) -> void:
-	_ui_step.text = "STEP:%d"%Common.count_undo()
+	_ui_step.visible = false
+	_ui_undo.visible = false
+	_ui_redo.visible = false
+	var cnt_undo = Common.count_undo()
+	if cnt_undo > 0:	
+		_ui_undo.visible = true
+		_ui_step.visible = true
+		_ui_step.text = "STEP:%d"%cnt_undo
+	
+	# 履歴をデバッグ用表示.
 	for data in Common.get_undo_list():
 		var d:Common.ReplayData = data
 		var buf = "\n"
@@ -136,8 +149,15 @@ func _update_ui(_delta:float) -> void:
 		buf += "(%d %d)%s (%d %d)%s"%[d.player_pos.x, d.player_pos.y, dir1, d.crate_pos.x, d.crate_pos.y, dir2]
 		_ui_step.text += buf
 	
+	if Common.count_redo() > 0:
+		_ui_redo.visible = true
+	
 
 
 func _on_Button_pressed() -> void:
 	# undoを実行する.
 	Common.undo()
+
+func _on_RedoButton_pressed() -> void:
+	# redoを実行する.
+	Common.redo()

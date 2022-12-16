@@ -28,16 +28,23 @@ class ReplayData:
 
 ## リプレイ管理.
 class ReplayMgr:
-	var undo_list = []
-	var redo_list = []
+	var undo_list = [] # undoリスト.
+	var redo_list = [] # redoリスト.
+	
+	## リセット.
 	func reset():
 		undo_list.clear()
 		redo_list.clear()
-		
-	func add_undo(d:ReplayData):
+	
+	## undoを追加する.
+	func add_undo(d:ReplayData, is_clear_redo:bool=true):
 		undo_list.append(d)
+		if is_clear_redo:
+			redo_list.clear() # undoが追加されたらredoは消える.
+	## undoできる数を取得する.
 	func count_undo() -> int:
 		return undo_list.size()
+	## undoを実行する.
 	func undo(player:Player):
 		if undo_list.empty():
 			return # 何もしない.
@@ -55,7 +62,40 @@ class ReplayMgr:
 			var ynow = yprev + v.y
 			var crate = Field.search_crate(xnow, ynow)
 			crate.set_pos(xprev, yprev, true) # 1つ戻す
+		
+		# redoに追加.
+		add_redo(d)
 
+	## redoを追加する.
+	func add_redo(d:ReplayData) -> void:
+		redo_list.append(d)
+	## redoできる数を取得する.
+	func count_redo() -> int:
+		return redo_list.size()
+	## redoを実行する.
+	func redo(player:Player) -> void:
+		if redo_list.empty():
+			return # 何もしない.
+		
+		# 末尾から取り出す.
+		var d:ReplayData = redo_list.pop_back()
+		var p_vdir = Direction.get_point(d.player_dir)
+		var px = d.player_pos.x + p_vdir.x
+		var py = d.player_pos.y + p_vdir.y
+		player.set_pos(px, py, true)
+		player.set_dir(d.player_dir)
+		if d.crate_dir != Direction.eType.NONE:
+			# 荷物の位置も戻す.
+			var xprev = d.crate_pos.x
+			var yprev = d.crate_pos.y
+			var v = Direction.get_point(d.crate_dir)
+			var xnext = xprev + v.x
+			var ynext = yprev + v.y
+			var crate = Field.search_crate(xprev, yprev)
+			crate.set_pos(xnext, ynext, true) # 1つ進める.
+		
+		# undoに追加 (redoは消さない).
+		add_undo(d, false)
 # ---------------------------------------
 # vars.
 # ---------------------------------------
@@ -76,7 +116,8 @@ func setup(player, layers):
 ## CanvasLayerを取得する.
 func get_layer(name:String) -> CanvasLayer:
 	return _layers[name]
-	
+
+## ■UNDO関連.	
 func add_undo(data:ReplayData) -> void:
 	_replay_mgr.add_undo(data)
 func count_undo() -> int:
@@ -86,6 +127,12 @@ func get_undo_list():
 ## undoを実行する.
 func undo():
 	_replay_mgr.undo(_player)
+## ■REDO関連.
+func count_redo() -> int:
+	return _replay_mgr.count_redo()
+## redoを実行する.
+func redo() -> void:
+	_replay_mgr.redo(_player)
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
