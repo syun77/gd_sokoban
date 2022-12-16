@@ -37,22 +37,25 @@ onready var _crate_layer = $CrateLayer
 # ---------------------------------------
 # vars.
 # ---------------------------------------
-var _timer = 0.0
-var _state = eState.MAIN
+var _timer = 0.0 # タイマー.
+var _state = eState.MAIN # 状態.
 
 # ---------------------------------------
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
+	# UIをいったん非表示にする.
 	_ui_caption.visible = false
 	_ui_step.visible = false
 	_ui_undo.visible = false
 	_ui_redo.visible = false
 	
+	# レベルを読み込む.
 	var level_path = Common.get_level_scene()
 	var level_res = load(level_path)
 	var level_obj = level_res.instance()
 	_tile_layer.add_child(level_obj)
+	# Frontのタイルマップを取得する.
 	var tile_front = level_obj.get_node("./Front")
 	
 	# フィールドをセットアップする.
@@ -68,6 +71,7 @@ func _ready() -> void:
 	
 	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
+		push_warning("プレイヤーの開始位置が設定されていません.")
 		var p = Field.search_random_none()
 		_create_player(p.x, p.y)
 	
@@ -80,7 +84,8 @@ func _ready() -> void:
 ## タイル情報から生成されるオブジェクトをチェック＆生成.
 func _create_obj(i:int, j:int, id:int) -> bool:
 	match id:
-		Field.eTile.START: # プレイヤー開始位置.
+		Field.eTile.START:
+			# プレイヤー開始位置.
 			_create_player(i, j)
 			return true
 		Field.eTile.CRATE1, Field.eTile.CRATE2, Field.eTile.CRATE3, Field.eTile.CRATE4:
@@ -88,13 +93,13 @@ func _create_obj(i:int, j:int, id:int) -> bool:
 			_create_crate(i, j, id)
 			return true
 	
+	# 生成されていない.
 	return false
 
 ## プレイヤーの生成.
 func _create_player(i:int, j:int) -> void:
 	_player = PlayerObj.instance()
-	var p = Point2.new(i, j)
-	_player.set_pos(p.x, p.y, true)
+	_player.set_pos(i, j, true)
 	_obj_layer.add_child(_player)
 
 ## 荷物の生成.
@@ -118,7 +123,7 @@ func _update_main(delta:float) -> void:
 	
 	if Input.is_action_just_pressed("ui_reset"):
 		# リセットボタン.
-		get_tree().change_scene("res://Main.tscn")
+		var _ret = get_tree().change_scene("res://Main.tscn")
 	
 	# プレイヤーの更新.
 	_player.proc(delta)
@@ -132,6 +137,7 @@ func _update_main(delta:float) -> void:
 	
 	# ステージクリアしたかどうか.
 	if Field.is_stage_clear():
+		# ボアンを消す.
 		_ui_redo.visible = false
 		_ui_undo.visible = false
 		_ui_reset.visible = false
@@ -139,6 +145,7 @@ func _update_main(delta:float) -> void:
 
 ## 更新 > ステージクリア.
 func _update_stage_clear() -> void:
+	# キャプションを表示する.
 	_ui_caption.visible = true
 	_ui_caption.text = "COMPLETED"
 	if Common.is_final_level():
@@ -150,8 +157,9 @@ func _update_stage_clear() -> void:
 		if Common.completed_all_level():
 			# 全ステージクリアしたら最初から.
 			Common.reset_level()
-		get_tree().change_scene("res://Main.tscn")
+		var _ret = get_tree().change_scene("res://Main.tscn")
 
+## 更新 > UI
 func _update_ui(_delta:float) -> void:
 	_ui_step.visible = false
 	_ui_undo.visible = false
@@ -174,21 +182,21 @@ func _update_ui(_delta:float) -> void:
 	
 	if Common.count_redo() > 0:
 		_ui_redo.visible = true
-	
 
-
+## UNDOボタンをクリック.
 func _on_Button_pressed() -> void:
 	if _state == eState.MAIN:
 		# undoを実行する.
 		Common.undo()
 
+## REDOボタンをクリック.
 func _on_RedoButton_pressed() -> void:
 	if _state == eState.MAIN:
 		# redoを実行する.
 		Common.redo()
 
-
+## リセットボタンをクリック.
 func _on_ResetButton_pressed() -> void:
 	if _state == eState.MAIN:
 		# ステージをやり直す.
-		get_tree().change_scene("res://Main.tscn")
+		var _ret = get_tree().change_scene("res://Main.tscn")

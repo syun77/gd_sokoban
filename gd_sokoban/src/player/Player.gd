@@ -24,6 +24,7 @@ var _anim_timer = 0
 func proc(delta:float) -> void:
 	_anim_timer += delta
 
+	# キーの入力判定.
 	var is_moving = false
 	if Input.is_action_just_pressed("ui_left"):
 		_dir = Direction.eType.LEFT
@@ -39,6 +40,7 @@ func proc(delta:float) -> void:
 		is_moving = true
 	
 	if is_moving:
+		# 移動する.
 		_move()
 		
 	_spr.frame = _get_anim_id(int(_anim_timer*4)%4)
@@ -49,6 +51,7 @@ func proc(delta:float) -> void:
 func _ready() -> void:
 	pass
 
+## 移動.
 func _move() -> void:
 	# 移動先を調べる.
 	var prev_dir = _dir # 移動前の向き
@@ -76,10 +79,12 @@ func _move() -> void:
 		# リプレイデータを追加.
 		_add_replay(now, prev_dir, next, Direction.eType.NONE)
 
+## リプレイを追加.
 func _add_replay(player_pos:Point2, dir:int, crate_pos:Point2, crate_dir:int) -> void:
 	var replay = Common.ReplayData.new(player_pos.x, player_pos.y, dir, crate_pos.x, crate_pos.y, crate_dir)
 	Common.add_undo(replay)
 
+## アニメーションIDを取得する.
 func _get_anim_id(idx:int) -> int:
 	var tbl = [0, 1, 0, 2]
 
