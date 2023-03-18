@@ -50,7 +50,7 @@ class ReplayMgr:
 		return undo_list.size()
 	## undoを実行する.
 	func undo(player:Player):
-		if undo_list.empty():
+		if undo_list.is_empty():
 			return # 何もしない.
 		
 		# 末尾から取り出す.
@@ -78,7 +78,7 @@ class ReplayMgr:
 		return redo_list.size()
 	## redoを実行する.
 	func redo(player:Player) -> void:
-		if redo_list.empty():
+		if redo_list.is_empty():
 			return # 何もしない.
 		
 		# 末尾から取り出す.

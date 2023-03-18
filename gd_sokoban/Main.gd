@@ -23,16 +23,16 @@ enum eState {
 # ---------------------------------------
 # onready.
 # ---------------------------------------
-onready var _player:Player = null
-onready var _ui_caption = $UILayer/LabelCaption
-onready var _ui_step = $UILayer/LabelStep
-onready var _ui_reset = $UILayer/ResetButton
-onready var _ui_undo = $UILayer/UndoButton
-onready var _ui_redo = $UILayer/RedoButton
+@onready var _player:Player = null
+@onready var _ui_caption = $UILayer/LabelCaption
+@onready var _ui_step = $UILayer/LabelStep
+@onready var _ui_reset = $UILayer/ResetButton
+@onready var _ui_undo = $UILayer/UndoButton
+@onready var _ui_redo = $UILayer/RedoButton
 # キャンバスレイヤー.
-onready var _tile_layer = $TileLayer
-onready var _obj_layer = $ObjLayer
-onready var _crate_layer = $CrateLayer
+@onready var _tile_layer = $TileLayer
+@onready var _obj_layer = $ObjLayer
+@onready var _crate_layer = $CrateLayer
 
 # ---------------------------------------
 # vars.
@@ -44,6 +44,8 @@ var _state = eState.MAIN # 状態.
 # private functions.
 # ---------------------------------------
 func _ready() -> void:
+	DisplayServer.window_set_size(Vector2i(1024*2, 600*2))
+	
 	# UIをいったん非表示にする.
 	_ui_caption.visible = false
 	_ui_step.visible = false
@@ -53,10 +55,10 @@ func _ready() -> void:
 	# レベルを読み込む.
 	var level_path = Common.get_level_scene()
 	var level_res = load(level_path)
-	var level_obj = level_res.instance()
+	var level_obj = level_res.instantiate()
 	_tile_layer.add_child(level_obj)
 	# Frontのタイルマップを取得する.
-	var tile_front = level_obj.get_node("./Front")
+	var tile_front:TileMap = level_obj.get_node("./Front")
 	
 	# フィールドをセットアップする.
 	Field.setup(tile_front)
@@ -64,10 +66,10 @@ func _ready() -> void:
 	# Frontタイルの情報からインスタンスを生成する.	
 	for j in range(Field.TILE_HEIGHT):
 		for i in range(Field.TILE_WIDTH):
-			var v = tile_front.get_cell(i, j)
+			var v = tile_front.get_cell_source_id(0, Vector2i(i, j))
 			if _create_obj(i, j, v):
 				# 生成したらタイルの情報は消しておく.
-				tile_front.set_cell(i, j, Field.eTile.NONE)
+				tile_front.set_cell(0, Vector2i(i, j), Field.eTile.NONE)
 	
 	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
@@ -98,13 +100,13 @@ func _create_obj(i:int, j:int, id:int) -> bool:
 
 ## プレイヤーの生成.
 func _create_player(i:int, j:int) -> void:
-	_player = PlayerObj.instance()
+	_player = PlayerObj.instantiate()
 	_player.set_pos(i, j, true)
 	_obj_layer.add_child(_player)
 
 ## 荷物の生成.
 func _create_crate(i:int, j:int, id:int) -> void:
-	var crate = CrateObj.instance()
+	var crate = CrateObj.instantiate()
 	# Spriteの更新があるので先に add_child() する.
 	_crate_layer.add_child(crate)
 	crate.setup(i, j, id)
@@ -157,18 +159,18 @@ func _update_stage_clear() -> void:
 		if Common.completed_all_level():
 			# 全ステージクリアしたら最初から.
 			Common.reset_level()
-		var _ret = get_tree().change_scene("res://Main.tscn")
+		var _ret = get_tree().change_scene_to_file("res://Main.tscn")
 
 ## 更新 > UI
 func _update_ui(_delta:float) -> void:
 	_ui_step.visible = false
-	_ui_undo.visible = false
-	_ui_redo.visible = false
 	var cnt_undo = Common.count_undo()
 	if cnt_undo > 0:	
 		_ui_undo.visible = true
 		_ui_step.visible = true
 		_ui_step.text = "STEP:%d"%cnt_undo
+	else:
+		_ui_undo.visible = false
 	
 	if _DEBUG_UNDO_LOG:
 		# 履歴をデバッグ用表示.
@@ -182,21 +184,23 @@ func _update_ui(_delta:float) -> void:
 	
 	if Common.count_redo() > 0:
 		_ui_redo.visible = true
-
-## UNDOボタンをクリック.
-func _on_Button_pressed() -> void:
-	if _state == eState.MAIN:
-		# undoを実行する.
-		Common.undo()
-
-## REDOボタンをクリック.
-func _on_RedoButton_pressed() -> void:
-	if _state == eState.MAIN:
-		# redoを実行する.
-		Common.redo()
-
+	else:
+		_ui_redo.visible = false
+		
 ## リセットボタンをクリック.
 func _on_ResetButton_pressed() -> void:
 	if _state == eState.MAIN:
 		# ステージをやり直す.
-		var _ret = get_tree().change_scene("res://Main.tscn")
+		var _ret = get_tree().change_scene_to_file("res://Main.tscn")
+
+## REDOボタンをクリック.
+func _on_RedoButton_pressed():
+	if _state == eState.MAIN:
+		# redoを実行する.
+		Common.redo()
+
+## UNDOボタンをクリック.
+func _on_undo_button_pressed():
+	if _state == eState.MAIN:
+		# undoを実行する.
+		Common.undo()

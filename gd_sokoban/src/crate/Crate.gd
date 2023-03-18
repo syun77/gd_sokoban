@@ -25,8 +25,8 @@ enum eType {
 # ---------------------------------------
 # onready.
 # ---------------------------------------
-onready var _spr = $Sprite
-onready var _spr2 = $Sprite2
+@onready var _spr = $Sprite
+@onready var _spr2 = $Sprite2
 
 # ---------------------------------------
 # vars.

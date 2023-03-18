@@ -54,7 +54,7 @@ func setup(tile:TileMap) -> void:
 	_tile = tile
 
 func get_cell(i:int, j:int) -> int:
-	return _tile.get_cell(i, j)
+	return _tile.get_cell_source_id(0, Vector2i(i, j))
 
 ## 移動可能な位置かどうか.
 func can_move(i:int, j:int) -> bool:

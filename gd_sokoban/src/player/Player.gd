@@ -11,7 +11,7 @@ class_name Player
 # ---------------------------------------
 # onready.
 # ---------------------------------------
-onready var _spr = $Sprite
+@onready var _spr = $Sprite
 
 # ---------------------------------------
 # vars.
