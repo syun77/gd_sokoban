@@ -21,6 +21,7 @@ offset_right = 504.0
 offset_bottom = 189.0
 theme = ExtResource("3")
 text = "STAGE CLEAR"
+horizontal_alignment = 1
 
 [node name="LabelStep" type="Label" parent="UILayer"]
 offset_left = 776.0

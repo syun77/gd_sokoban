@@ -12,7 +12,7 @@ config_version=5
 
 config/name="gd_sokoban"
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.0")
+config/features=PackedStringArray("4.1")
 config/icon="res://icon.png"
 
 [autoload]
@@ -26,6 +26,10 @@ Field="*res://src/common/Field.gd"
 window/size/viewport_width=1024
 window/size/viewport_height=600
 window/stretch/mode="viewport"
+
+[editor]
+
+movie_writer/movie_file="movie.avi"
 
 [global]
 
