@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cc8wj3m4jn5fx"]
 
 [ext_resource type="Texture2D" uid="uid://iwjm613pve2i" path="res://assets/images/crate.png" id="1"]
-[ext_resource type="Script" path="res://src/crate/Crate.gd" id="2"]
+[ext_resource type="Script" uid="uid://ds8j7f6xibci" path="res://src/crate/Crate.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://bjgikfqinmrh4" path="res://assets/images/crate_white.png" id="3"]
 
 [sub_resource type="CanvasItemMaterial" id="2"]

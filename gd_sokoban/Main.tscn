@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://h4of0xy2lurm"]
 
-[ext_resource type="Script" path="res://Main.gd" id="1"]
-[ext_resource type="Theme" path="res://assets/fonts/bmpfont.tres" id="3"]
+[ext_resource type="Script" uid="uid://dnqcjidm00h62" path="res://Main.gd" id="1"]
+[ext_resource type="Theme" uid="uid://bmngl6ar8axxa" path="res://assets/fonts/bmpfont.tres" id="3"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1")
