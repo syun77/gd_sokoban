@@ -58,7 +58,7 @@ func _ready() -> void:
 	var level_obj = level_res.instantiate()
 	_tile_layer.add_child(level_obj)
 	# Frontのタイルマップを取得する.
-	var tile_front:TileMap = level_obj.get_node("./Front")
+	var tile_front:TileMapLayer = level_obj.get_node("./Front")
 	
 	# フィールドをセットアップする.
 	Field.setup(tile_front)
@@ -66,10 +66,10 @@ func _ready() -> void:
 	# Frontタイルの情報からインスタンスを生成する.	
 	for j in range(Field.TILE_HEIGHT):
 		for i in range(Field.TILE_WIDTH):
-			var v = tile_front.get_cell_source_id(0, Vector2i(i, j))
+			var v = tile_front.get_cell_source_id(Vector2i(i, j))
 			if _create_obj(i, j, v):
 				# 生成したらタイルの情報は消しておく.
-				tile_front.set_cell(0, Vector2i(i, j), Field.eTile.NONE)
+				tile_front.set_cell(Vector2i(i, j), Field.eTile.NONE)
 	
 	# スタート地点が未設定の場合はランダムな位置にプレイヤーを出現させる.
 	if _player == null:
